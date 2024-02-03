@@ -77,11 +77,47 @@
 
 ;;; To make a move, replace the position at row col to player ('X or 'O)
 (define (make-move board row col player)
-  'todo)
+  (let* ((size (sqrt (length brd)))
+         (index (+ (* row size) col)))
+    (update-list brd index player)))
+
+(define (update-list lst index new-val)
+  (if (= index 0)
+      (cons new-val (cdr lst))
+      (cons (car lst)(update-list (cdr lst)(- index 1)new-val))))
 
 ;;; To determine whether there is a winner?
 (define (winner? board)
-  'todo)
+  (let ((size (sqrt (length board))))
+    (or (check-rows board size)
+        (check-cols board size)
+        (check-dias board size))))
+
+(define (check-rows board size)
+  (let loop((rows (list->rows board size)))
+    (cond[(null? rows) #f]
+         [(equal? (car rows) (make-list size 'X)) 'X]
+         [(equal? (car rows) (make-list size 'O)) 'O]
+         [else (loop (cdr rows))])))
+
+(define (check-cols board size)
+  (check-rows (transpose board size) size))
+
+(define (check-dias board size)
+  (or (check-dia board size 1)
+      (check-dia board size (- size))))
+
+(define (check-diaa board size step)
+  (let ((diag (for/list ([i (in-range size)])
+                  (list-ref board (+ i (* i step))))))
+    (cond [(equal? diag (make-list size 'X)) 'X]
+          [(equal? diag (make-list size 'O)) 'O]
+          [else #f])))
+
+(define (list->rows board size)
+  (for/list ([i (in-range size)])
+    (for/list ([j (in-range size)])
+      (list-ref board (+ j (* i size))))))
 
 ;;; The board is the list containing E O X 
 ;;; Player will always be 'O
