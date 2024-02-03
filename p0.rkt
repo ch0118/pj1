@@ -31,7 +31,33 @@
 
 ; Check whether a list is a valid board
 (define (board? lst)
-  'todo)
+  (let* ((flattened-board) flatten board))
+    (size (length flattened-board))
+    (root (sqrt size)))
+  (and (interger? root)
+    (>= root 3)
+    (valid-symbols? flattened-board)
+    (valid-xo-counts? flattened-board))))
+
+(define (flatten lst)
+  (if (null? lst)
+    '()
+    (if (list? (car lst))
+      (append (flatten (car lst))(flatten (cdr lst)))
+      (con (car lst)(flatten (cdr lst))))))
+
+(define (valid-symbols? lst)
+  (apply and (map (lambda (symbol) (or (eq? symbol 'X)(eq? symbol 'O)(eq? symbol 'E))) lst)))
+
+(define (valid-xo-counts? lst)
+  (let ((x-count (count 'X lst))
+         (o-count (count 'O lst)))
+    (and (<= (- x-count o-count) 1)
+         (or (>= x-count o-count)
+             (equal? x-count o-count)))))
+
+(define (count symbol lst)
+  (length (filter (lambda (s)(eq? symbol s)) lst)))
 
 ;;; From the board, calculate who is making a move this turn
 (define (next-player board)
