@@ -61,7 +61,11 @@
 
 ;;; From the board, calculate who is making a move this turn
 (define (next-player board)
-  'todo)
+  (let ((x-count (count 'X board))
+        (o-count (count 'O board)))
+    (if (> x-count o-count)
+        'O;
+        'X)));
 
 ;;; If player ('X or 'O) want to make a move, check whether it's this
 ;;; player's turn and the position on the board is empty ('E)
