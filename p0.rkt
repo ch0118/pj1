@@ -44,7 +44,7 @@
     '()
     (if (list? (car lst))
       (append (flatten (car lst))(flatten (cdr lst)))
-      (con (car lst)(flatten (cdr lst))))))
+      (cons (car lst)(flatten (cdr lst))))))
 
 (define (valid-symbols? lst)
   (apply and (map (lambda (symbol) (or (eq? symbol 'X)(eq? symbol 'O)(eq? symbol 'E))) lst)))
@@ -63,14 +63,17 @@
 (define (next-player board)
   (let ((x-count (count 'X board))
         (o-count (count 'O board)))
-    (if (> x-count o-count)
-        'O;
-        'X)));
+    (if (> x-count o-count)'O 'X)));
 
 ;;; If player ('X or 'O) want to make a move, check whether it's this
 ;;; player's turn and the position on the board is empty ('E)
 (define (valid-move? board row col player)
-  'todo)
+  (let* ((flattened-board (flatten board))
+         (size (length flattened-board))
+         (board-size (sqrt size))
+         (index(+ (* (sub1 row) board-size) (sub1 col))))
+    (and (eq? (next-player board) player)
+         (eq? (list-ref flattened-board index) 'E))))
 
 ;;; To make a move, replace the position at row col to player ('X or 'O)
 (define (make-move board row col player)
